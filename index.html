@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f6f2e9">
+    <meta name="description" content="Um caderno digital que guarda seu traço e respeita suas palavras.">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Meu Traço — caderno digital</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Meu Traço, início">
+          <span class="brand-mark" aria-hidden="true">m.</span>
+          <span>meu traço</span>
+        </a>
+        <div class="topbar-actions">
+          <span class="privacy-label"><span aria-hidden="true"></span> Só neste aparelho</span>
+          <button class="install-button" id="install-app" type="button">Instalar app</button>
+        </div>
+      </header>
+
+      <section class="welcome" aria-labelledby="welcome-title">
+        <p class="eyebrow">SEU ESPAÇO, SEU JEITO</p>
+        <h1 id="welcome-title">Escreva como<br>você sempre escreveu.</h1>
+        <p class="welcome-copy">Guarde seu traço. Organize suas ideias sem perder sua voz.</p>
+      </section>
+
+      <section class="notebook" aria-labelledby="note-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PÁGINA NOVA</p>
+            <h2 id="note-title">Uma ideia de cada vez</h2>
+          </div>
+          <button class="text-button" id="new-note" type="button">+ Nova página</button>
+        </div>
+
+        <label class="sr-only" for="note-name">Título da página</label>
+        <input id="note-name" class="title-input" type="text" maxlength="70" placeholder="Dê um nome para esta página">
+
+        <div class="paper-wrap">
+          <div class="paper-heading">
+            <span>SEU ESPAÇO DE ESCRITA</span>
+            <span aria-hidden="true">✦</span>
+          </div>
+          <canvas id="writing-pad" aria-label="Área para escrever à mão com o dedo ou uma caneta"></canvas>
+          <div class="paper-hint" id="canvas-hint">Escreva aqui com o dedo ou uma caneta</div>
+          <div class="paper-tools">
+            <button class="tool-button" id="undo-stroke" type="button" aria-label="Desfazer último traço">↶ <span>Desfazer</span></button>
+            <button class="tool-button" id="clear-pad" type="button">Limpar folha</button>
+          </div>
+        </div>
+
+        <label class="field-label" for="transcription">Suas palavras, em texto</label>
+        <textarea id="transcription" rows="4" placeholder="Digite ou cole uma transcrição. A leitura automática da letra ainda não está ativa."></textarea>
+        <p class="helper-copy">A imagem guarda sua letra original. A transcrição é separada e você pode editá-la.</p>
+
+        <div class="actions">
+          <button class="primary-button" id="save-note" type="button">Guardar no caderno <span aria-hidden="true">↗</span></button>
+          <button class="secondary-button" id="organize-note" type="button">Organizar ideias</button>
+        </div>
+        <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+
+        <section class="suggestion-panel" id="suggestion-panel" aria-live="polite" hidden>
+          <div class="suggestion-heading">
+            <div>
+              <p class="eyebrow">RASCUNHO DE ORGANIZAÇÃO</p>
+              <h3>Suas ideias, em tópicos</h3>
+            </div>
+            <span class="suggestion-badge">sem corrigir sua gramática</span>
+          </div>
+          <ul id="suggestion-list"></ul>
+          <p class="helper-copy">Demonstração local: esta organização usa pontuação e quebras de linha, não um modelo de IA.</p>
+        </section>
+      </section>
+
+      <section class="handwriting-section" aria-labelledby="handwriting-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SUA CALIGRAFIA</p>
+            <h2 id="handwriting-title">Do teclado para o papel</h2>
+          </div>
+          <span class="saved-count" id="sample-status">Sem amostra</span>
+        </div>
+        <p class="helper-copy handwriting-intro">Fotografe uma página escrita à mão para guardar uma referência do seu traço neste aparelho.</p>
+        <div class="sample-actions">
+          <button class="secondary-button" id="open-camera" type="button">Abrir câmera</button>
+          <label class="upload-button" for="sample-file">Escolher ou fotografar</label>
+          <input class="sr-only" id="sample-file" type="file" accept="image/*" capture="environment">
+        </div>
+        <div class="camera-panel" id="camera-panel" hidden>
+          <video id="camera-video" autoplay playsinline muted aria-label="Prévia da câmera"></video>
+          <div class="sample-actions">
+            <button class="primary-button" id="capture-photo" type="button">Tirar foto</button>
+            <button class="secondary-button" id="close-camera" type="button">Fechar câmera</button>
+          </div>
+        </div>
+        <div class="sample-preview" id="sample-preview" hidden>
+          <img id="sample-image" alt="Amostra de escrita guardada neste aparelho">
+          <button class="tool-button" id="delete-sample" type="button">Apagar amostra</button>
+        </div>
+
+        <label class="field-label" for="typed-for-paper">Texto para escrever no seu papel</label>
+        <textarea id="typed-for-paper" rows="3" placeholder="Digite aqui o texto que quer ver em uma página de papel."></textarea>
+        <div class="actions">
+          <button class="primary-button" id="render-paper" type="button">Ver no papel <span aria-hidden="true">↗</span></button>
+          <button class="secondary-button" id="print-paper" type="button">Imprimir página</button>
+        </div>
+        <article class="handwriting-paper" id="handwriting-paper" aria-label="Prévia de texto em estilo manuscrito">
+          <p class="paper-heading">MEU TRAÇO <span>✦</span></p>
+          <p class="handwriting-output is-placeholder" id="handwriting-output">Seu texto aparecerá aqui, em estilo manuscrito.</p>
+        </article>
+        <p class="helper-copy">Prévia demonstrativa: usa uma fonte manuscrita disponível no aparelho. A foto ainda não cria uma fonte personalizada; suas palavras e sua gramática não são alteradas.</p>
+      </section>
+
+      <section class="saved-section" aria-labelledby="saved-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SEU CADERNO</p>
+            <h2 id="saved-title">Páginas guardadas</h2>
+          </div>
+          <span class="saved-count" id="saved-count">0 páginas</span>
+        </div>
+        <div class="empty-state" id="empty-state">
+          <span class="empty-icon" aria-hidden="true">✎</span>
+          <p>Seu caderno começa com uma página.</p>
+          <span>Escreva algo acima e guarde para encontrar depois.</span>
+        </div>
+        <ul class="note-list" id="note-list" aria-label="Páginas guardadas"></ul>
+      </section>
+
+      <footer class="footer-note">
+        <span aria-hidden="true">♡</span> Sua letra não precisa ser perfeita para ser sua.
+      </footer>
+    </main>
+    <dialog class="install-dialog" id="install-dialog" aria-labelledby="install-dialog-title">
+      <div class="install-dialog-content">
+        <p class="eyebrow">MEU TRAÇO NO CELULAR</p>
+        <h2 id="install-dialog-title">Instale o caderno</h2>
+        <p id="install-instructions"></p>
+        <button class="primary-button" id="close-install-dialog" type="button">Entendi</button>
+      </div>
+    </dialog>
+    <script src="./app.js"></script>
+  </body>
+</html>
